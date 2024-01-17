@@ -8,11 +8,12 @@ import { useState } from 'react';
 type EmployeeListProps = {
     list: IEmployee[];
     onDeleteClickHnd: (data: IEmployee) => void
+    onEdit: (data: IEmployee) => void
 }
 
 export default function EmployeeList(props: EmployeeListProps) {
 
-    const { list, onDeleteClickHnd } = props;
+    const { list, onDeleteClickHnd, onEdit } = props;
 
     const [showModal, setShowModal] = useState(false);
 
@@ -49,7 +50,7 @@ export default function EmployeeList(props: EmployeeListProps) {
                                     <td>
                                         <div>
                                             <input type='button' value='View' onClick={() => viewEmployee(employee)} />
-                                            <input type='button' value='Edit' />
+                                            <input type='button' value='Edit' onClick={() => onEdit(employee)} />
                                             <input type='button' value='Delete' onClick={() => onDeleteClickHnd(employee)} />
                                         </div>
                                     </td>

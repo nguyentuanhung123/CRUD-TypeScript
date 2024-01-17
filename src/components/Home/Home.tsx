@@ -5,12 +5,15 @@ import { IEmployee, PageEnum, dumpEmployeeList } from "../../@types/employee.typ
 //components
 import EmployeeList from "../EmployeeList"
 import EmployeeCreate from "../EmployeeCreate"
+import EmployeeEdit from "../EmployeeEdit"
 
 export default function Home() {
 
-    const [employeeList, setEmployeeList] = useState(dumpEmployeeList as IEmployee[])
+    const [employeeList, setEmployeeList] = useState([] as IEmployee[])
 
     const [shownPage, setShownPage] = useState(PageEnum.list);
+
+    const [dataToEdit, setDataToEdit] = useState({} as IEmployee)
 
     const onAddEmployeeClickHnd = () => {
         setShownPage(PageEnum.add)
@@ -36,6 +39,19 @@ export default function Home() {
         setEmployeeList(tempList);
     }
 
+    const editEmployeeData = (data: IEmployee) => {
+        setShownPage(PageEnum.edit)
+        setDataToEdit(data)
+    }
+
+    const updateData = (data: IEmployee) => {
+        const filteredData = employeeList.filter((x) => x.id === data.id)[0];
+        const indexOfRecord = employeeList.indexOf(filteredData);
+        const tempData = [...employeeList];
+        tempData[indexOfRecord] = data;
+        setEmployeeList(tempData);
+    }
+
     return (
         <>
             <article className="article-header">
@@ -49,12 +65,15 @@ export default function Home() {
                     shownPage === PageEnum.list && (
                         <>
                             <input type="button" value='Add Employee' onClick={onAddEmployeeClickHnd} className="add-employee-btn" />
-                            <EmployeeList list={employeeList} onDeleteClickHnd={deleteEmployee} />
+                            <EmployeeList list={employeeList} onDeleteClickHnd={deleteEmployee} onEdit={editEmployeeData} />
                         </>
                     )
                 }
                 {
                     shownPage === PageEnum.add && <EmployeeCreate onBackBtnClickHnd={showListPage} onSubmitClickHnd={addEmployee} />
+                }
+                {
+                    shownPage === PageEnum.edit && <EmployeeEdit data={dataToEdit} onBackBtnClickHnd={showListPage} onUpdateClickHnd={updateData} />
                 }
             </section>
         </>
