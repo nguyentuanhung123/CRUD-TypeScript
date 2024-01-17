@@ -24,6 +24,18 @@ export default function Home() {
         setEmployeeList([...employeeList, data]);
     }
 
+    const deleteEmployee = (data: IEmployee) => {
+        // to index from array i,e employeeList
+        //splice that
+        //update new record
+
+        const indexToDelete = employeeList.indexOf(data);
+        const tempList = [...employeeList];
+
+        tempList.splice(indexToDelete, 1);
+        setEmployeeList(tempList);
+    }
+
     return (
         <>
             <article className="article-header">
@@ -36,8 +48,8 @@ export default function Home() {
                 {
                     shownPage === PageEnum.list && (
                         <>
-                            <input type="button" value='Add Employee' onClick={onAddEmployeeClickHnd} />
-                            <EmployeeList list={employeeList} />
+                            <input type="button" value='Add Employee' onClick={onAddEmployeeClickHnd} className="add-employee-btn" />
+                            <EmployeeList list={employeeList} onDeleteClickHnd={deleteEmployee} />
                         </>
                     )
                 }
