@@ -1,6 +1,10 @@
 import { IEmployee } from '../../@types/employee.type';
 import './EmployeeList.style.css';
 
+//components
+import EmployeeModal from '../EmployeeModal';
+import { useState } from 'react';
+
 type EmployeeListProps = {
     list: IEmployee[];
     onDeleteClickHnd: (data: IEmployee) => void
@@ -9,6 +13,20 @@ type EmployeeListProps = {
 export default function EmployeeList(props: EmployeeListProps) {
 
     const { list, onDeleteClickHnd } = props;
+
+    const [showModal, setShowModal] = useState(false);
+
+    const [dataToShow, setDataToShow] = useState<IEmployee | null>(null);
+    // const [dataToShow, setDataToShow] = useState(null as IEmployee | null);
+
+    const viewEmployee = (data: IEmployee) => {
+        setDataToShow(data);
+        setShowModal(true);
+    }
+
+    const onCloseModal = () => {
+        setShowModal(false);
+    }
 
     return (
         <>
@@ -30,7 +48,7 @@ export default function EmployeeList(props: EmployeeListProps) {
                                     <td>{employee.email}</td>
                                     <td>
                                         <div>
-                                            <input type='button' value='View' />
+                                            <input type='button' value='View' onClick={() => viewEmployee(employee)} />
                                             <input type='button' value='Edit' />
                                             <input type='button' value='Delete' onClick={() => onDeleteClickHnd(employee)} />
                                         </div>
@@ -41,6 +59,10 @@ export default function EmployeeList(props: EmployeeListProps) {
                     }
                 </tbody>
             </table>
+            {/* add dataToShow !== null on View */}
+            {
+                showModal && dataToShow !== null && <EmployeeModal onClose={onCloseModal} data={dataToShow} />
+            }
         </>
     )
 }
