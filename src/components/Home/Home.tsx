@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import './Home.style.css'
 import { IEmployee, PageEnum, dumpEmployeeList } from "../../@types/employee.type"
 
@@ -15,6 +15,15 @@ export default function Home() {
 
     const [dataToEdit, setDataToEdit] = useState({} as IEmployee)
 
+    //dù đã lưu trong localStorage nhưng mỗi lần reload thì dữ liệu trên Browser lại mất dù data vẫn còn ở Application
+    useEffect(() => {
+        const listInString = window.localStorage.getItem("EmployeeList");
+        if (listInString) {
+            //data written as an JSON array will be parsed into a JavaScript array.
+            setEmployeeList(JSON.parse(listInString));
+        }
+    }, [])
+
     const onAddEmployeeClickHnd = () => {
         setShownPage(PageEnum.add)
     }
@@ -23,8 +32,14 @@ export default function Home() {
         setShownPage(PageEnum.list)
     }
 
+    const _setEmployeeList = (list: IEmployee[]) => {
+        setEmployeeList(list)
+        //Create a JSON array from a JavaScript array.
+        window.localStorage.setItem("EmployeeList", JSON.stringify(list))
+    }
+
     const addEmployee = (data: IEmployee) => {
-        setEmployeeList([...employeeList, data]);
+        _setEmployeeList([...employeeList, data]);
     }
 
     const deleteEmployee = (data: IEmployee) => {
@@ -36,7 +51,7 @@ export default function Home() {
         const tempList = [...employeeList];
 
         tempList.splice(indexToDelete, 1);
-        setEmployeeList(tempList);
+        _setEmployeeList(tempList);
     }
 
     const editEmployeeData = (data: IEmployee) => {
@@ -49,7 +64,7 @@ export default function Home() {
         const indexOfRecord = employeeList.indexOf(filteredData);
         const tempData = [...employeeList];
         tempData[indexOfRecord] = data;
-        setEmployeeList(tempData);
+        _setEmployeeList(tempData);
     }
 
     return (
